@@ -1,18 +1,19 @@
 name: Sync NekroNXT image to Aliyun ACR
-
 on:
   schedule:
-    - cron: "17 */6 * * *"
+    - cron: "23 */6 * * *"
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up image-syncer
-        uses: docker://ghcr.io/actuated/image-syncer:latest
+      - name: Copy official NekroNXT image to Shanghai ACR personal registry
+        uses: zhaojh10010/sync-docker-image@main
         with:
-          args: --help
+          source: ghcr.io
+          source-credential: ${{ secrets.SOURCE_CREDENTIAL }}
+          destination: crpi-gukwnnx8iuh9qpez.cn-shanghai.personal.cr.aliyuncs.com
+          destination-credential: ${{ secrets.DESTINATION_CREDENTIAL }}
+          copy: "nekroai/nekro-nxt:latest hajiming/nekro-nxt:latest"
