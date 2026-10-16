@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Copy official NekroNXT image to Shanghai ACR personal registry
-        uses: zhaojh10010/sync-docker-image@main
+        uses: zekza/sync-docker-image@main
         with:
           source: ghcr.io
           source-credential: ${{ secrets.SOURCE_CREDENTIAL }}
