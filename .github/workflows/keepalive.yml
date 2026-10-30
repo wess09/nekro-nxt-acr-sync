@@ -1,0 +1,42 @@
+name: Keep scheduled workflows active
+
+on:
+  schedule:
+    # Check weekly; create a commit only when main has been idle for 30 days.
+    - cron: '37 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: repository-keepalive
+  cancel-in-progress: false
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out default branch
+        uses: actions/checkout@v4
+
+      - name: Commit a keepalive marker after 30 days of inactivity
+        shell: bash
+        run: |
+          set -euo pipefail
+          last_commit=$(git log -1 --format=%ct)
+          now=$(date -u +%s)
+          idle_seconds=$((now - last_commit))
+          threshold_seconds=$((30 * 24 * 60 * 60))
+
+          if (( idle_seconds < threshold_seconds )); then
+            echo "Repository was updated within the last 30 days; no keepalive commit needed."
+            exit 0
+          fi
+
+          date -u '+%Y-%m-%dT%H:%M:%SZ' > .github/keepalive.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/keepalive.txt
+          git commit -m 'chore: keep scheduled workflows active'
+          git push origin HEAD:main
