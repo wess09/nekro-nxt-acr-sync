@@ -8,8 +8,12 @@ This repository contains the synchronization workflow only. It does not build or
 
 - **Scheduled synchronization:** Every six hours, at minute 23 (UTC).
 - **Manual synchronization:** Run the workflow from the **Actions** tab.
-- **Image copying:** The configured image tag is copied from the source registry to the destination registry.
-- **Multi-platform support:** The current sync action uses `skopeo copy -a`, which copies all architectures in the source image index.
+- **Image copying:** Both official `latest` (stable) and `preview` (rolling preview) image tags are copied from GHCR to matching tags in ACR. The sync action uses `skopeo copy -a` to preserve all architectures in the source image index.
+
+| Source (GHCR) | Destination (Shanghai ACR) |
+| --- | --- |
+| `ghcr.io/nekroai/nekro-nxt:latest` | `crpi-gukwnnx8iuh9qpez.cn-shanghai.personal.cr.aliyuncs.com/hajiming/nekro-nxt:latest` |
+| `ghcr.io/nekroai/nekro-nxt:preview` | `crpi-gukwnnx8iuh9qpez.cn-shanghai.personal.cr.aliyuncs.com/hajiming/nekro-nxt:preview` |
 
 Scheduled runs are best-effort and may start later than their configured time.
 
