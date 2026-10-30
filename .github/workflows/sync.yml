@@ -9,11 +9,13 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Copy official NekroNXT image to Shanghai ACR personal registry
+      - name: Copy NekroNXT stable and preview images to Shanghai ACR
         uses: zekza/sync-docker-image@261bb01708bfdbcd5c99f2a6bbb47512119e2f9b
         with:
           source: ghcr.io
           source-credential: ${{ secrets.SOURCE_CREDENTIAL }}
           destination: crpi-gukwnnx8iuh9qpez.cn-shanghai.personal.cr.aliyuncs.com
           destination-credential: ${{ secrets.DESTINATION_CREDENTIAL }}
-          copy: "nekroai/nekro-nxt:latest hajiming/nekro-nxt:latest"
+          copy: |
+            nekroai/nekro-nxt:latest hajiming/nekro-nxt:latest
+            nekroai/nekro-nxt:preview hajiming/nekro-nxt:preview
